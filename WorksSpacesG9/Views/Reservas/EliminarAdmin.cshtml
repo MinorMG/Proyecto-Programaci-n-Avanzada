@@ -1,0 +1,74 @@
+﻿@model WorksSpacesG9.Reservas
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+
+
+<h3 class="text-center">¿Está seguro de eliminar tu reserva?</h3>
+<div class="container d-flex justify-content-center">
+    <div class="justify-content-center" style="max-width: 600px;">
+       
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                Fecha Reserva
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.fecha_reserva)
+            </dd>
+
+            <dt>
+                Hora Inicio
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.hora_inicio)
+            </dd>
+
+            <dt>
+                Hora De Fin
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.hora_fin)
+            </dd>
+
+            <dt>
+                Estado
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.aprobacion)
+            </dd>
+
+            <dt>
+                Nombre Sala
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Salas_reunion.nombre)
+            </dd>
+
+            <dt>
+                Nombre Usuario
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Usuarios.nombre)
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color py-4 text-center">
+                <input type="submit" value="Eliminar" class="btn btn-outline-danger" /> |
+                @Html.ActionLink("Regresar", "ReservasPorUsuario", "Reservas", new { id = ViewBag.UserId }, new { @class = "btn btn-outline-primary" })
+            </div>
+        }
+    </div>
+</div>

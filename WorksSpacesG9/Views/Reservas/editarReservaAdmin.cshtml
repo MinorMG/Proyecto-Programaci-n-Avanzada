@@ -1,0 +1,69 @@
+﻿@model WorksSpacesG9.Reservas
+
+@{
+    ViewBag.Title = "editarReservaAdmin";
+}
+
+<h2 class="text-center">Editar Reserva</h2>
+<div class="container d-flex justify-content-center">
+    <div class="justify-content-center" style="max-width: 600px;">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Reservas</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.id_reserva)
+                @Html.HiddenFor(model => model.id_usuario)
+                @Html.HiddenFor(model => model.id_sala)
+
+
+
+                <div class="form-group">
+                    Fecha Reserva
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.fecha_reserva, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                        @Html.ValidationMessageFor(model => model.fecha_reserva, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Hora Inicio
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.hora_inicio, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.hora_inicio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Hora Fin
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.hora_fin, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.hora_fin, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Estado
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.aprobacion, new SelectList(new[] { "Aprobado", "Pendiente" }), "Seleccione un Estado", new { @class = "form-control", @name = "aprobacion" })
+                        @Html.ValidationMessageFor(model => model.aprobacion, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Guardar Cambios" class="btn btn-outline-success" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Regresar", "listaReservas", new { }, new { @class = "btn btn-outline-primary" })
+        </div>
+    </div>
+</div>

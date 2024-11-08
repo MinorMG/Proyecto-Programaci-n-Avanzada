@@ -1,0 +1,38 @@
+﻿@model WorksSpacesG9.Usuarios
+
+@{
+    ViewBag.Title = "Iniciar Sesión";
+}
+
+@using (Html.BeginForm("Login", "Login", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="card mb-6 text-center m-4">
+        <div class="card-body" style="background-color:lightslategrey">
+                <h2 class="text-white">Iniciar Sesión</h2>
+            <div class="form-group text-center my-4">
+                <h4 class="text-white">Email</h4>
+                @Html.TextBoxFor(m => m.email, new { @class = "form-control rounded-input mx-auto" })
+                @Html.ValidationMessageFor(m => m.email)
+            </div>
+
+            <div class="form-group text-center">
+                <h4 class="text-white">Contraseña</h4>
+                @Html.PasswordFor(m => m.contrasena, new { @class = "form-control rounded-input mx-auto" })
+                @Html.ValidationMessageFor(m => m.contrasena)
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="my-2">
+                <input type="submit" value="Iniciar Sesión" class="btn btn-outline-success" />
+                @Html.ActionLink("Registrarse", "Registro","Login", new { }, new { @class = "btn btn-outline-primary" })
+            </div>
+        </div>
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div>@Html.ValidationSummary()</div>
+}

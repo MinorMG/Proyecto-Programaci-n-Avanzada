@@ -1,0 +1,40 @@
+﻿@model WorksSpacesG9.Usuarios
+@{
+    ViewBag.Title = "Registro";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+<div class="card mb-6 text-center m-4">
+    <div class="card-body" style="background-color:lightslategrey">
+        <h2 class="text-white">Registro</h2>
+        <div class="form-group text-center my-4">
+            <h4 class="text-white">Nombre</h4>
+            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control rounded-input mx-auto my-4" })
+            @Html.ValidationMessageFor(m => m.nombre)
+        </div>
+        <div class="form-group text-center">
+            <h4 class="text-white">Email</h4>
+            @Html.TextBoxFor(m => m.email, new { @class = "form-control rounded-input mx-auto my-4" })
+            @Html.ValidationMessageFor(m => m.email)
+        </div>
+        <div class="form-group text-center">
+            <h4 class="text-white">Contraseña</h4>
+            @Html.PasswordFor(m => m.contrasena, new { @class = "form-control rounded-input mx-auto my-4" })
+            @Html.ValidationMessageFor(m => m.contrasena)
+        </div>
+    </div>
+        <div class="card-footer">
+            <div class="my-4">
+                <input type="submit" value="Registrar" class="btn btn-outline-success" />
+            </div>
+        </div>
+        </div>
+    
+    }
+
+
+
