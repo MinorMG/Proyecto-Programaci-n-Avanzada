@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Proyecto01.Models
 {
-    public class Reservation
+    public class Reserva
     {
         [Key]
         public int ReservationId { get; set; }
@@ -16,7 +16,7 @@ namespace Proyecto01.Models
         public int RoomId { get; set; } // Llave foránea a Room
 
         [ForeignKey("RoomId")]
-        public virtual Rooms Rooms { get; set; } // Relación con Room
+        public virtual Salas Rooms { get; set; } // Relación con Room
 
         [ForeignKey("UserId")]
         public virtual User user{ get; set; } // Relación con Room
