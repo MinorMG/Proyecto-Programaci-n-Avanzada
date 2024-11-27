@@ -177,12 +177,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Reserva.cs" />
+    <Compile Include="Models\reservas.cs" />
     <Compile Include="Models\Roliniatialize.cs" />
-    <Compile Include="Models\Salas.cs" />
+    <Compile Include="Models\equipamentos.cs" />
+    <Compile Include="Models\salas_equipamientos.cs" />
+    <Compile Include="Models\estadisticas.cs" />
+    <Compile Include="Models\salas_reunion.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

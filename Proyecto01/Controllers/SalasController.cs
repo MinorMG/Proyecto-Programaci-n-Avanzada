@@ -10,7 +10,7 @@ namespace Proyecto01.Controllers
 {
     public class SalasController : Controller
     {
-        private Models.Salas context = new Salas();
+        private Models.salas_reunion context = new salas_reunion();
 
         
         [HttpGet]
