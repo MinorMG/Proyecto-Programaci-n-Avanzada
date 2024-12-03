@@ -9,10 +9,11 @@ namespace Proyecto01.Models
 {
     public class SalasEquipamientos
     {
-        [Key, Column(Order = 0)]
+           
+        [Key]
         public int IdSala { get; set; }
 
-        [Key, Column(Order = 1)]
+        [Key]
         public int IdEquipamiento { get; set; }
 
         // Relaciones

@@ -10,23 +10,23 @@ namespace Proyecto01.Controllers
 {
     public class SalasController : Controller
     {
-        private Models.salas_reunion context = new salas_reunion();
+        //private Models.SalasReunion context = new SalasReunion();
+        private ApplicationDbContext context = new ApplicationDbContext();
 
-        
         [HttpGet]
         public ActionResult GestionSalas()
         {
-            var salas = context.Salas_reunion.ToList();
+            var salas = context.salasReunions.ToList();
             return View(salas);
         }
-
+        //aqui quede
         [HttpGet]
         public ActionResult SalasDisponibles()
         {
             var horaActual = DateTime.Now.TimeOfDay;
             var fechaActual = DateTime.Today;
-            var salasDispobibles = context.Salas_reunion.Where(s => s.hora_inicio <= horaActual && s.hora_fin >= horaActual).
-                Where(s => !context.Reservas.Any(r => r.id_sala == s.id_sala && r.fecha_reserva == fechaActual && r.hora_inicio <= horaActual && r.hora_fin > horaActual)).ToList();
+            var salasDispobibles = context.salasReunions.Where(s => s.HoraInicio <= horaActual && s.HoraFin >= horaActual).
+                Where(s => !context.Reservas.Any(r => r.IdSala == s.IdSala && r.FechaReserva == fechaActual && r.HoraInicio <= horaActual && r.HoraFin > horaActual)).ToList();
             ViewBag.CantidadSalasDisponibles = salasDispobibles.Count();
             return View(salasDispobibles);
         }
@@ -34,43 +34,43 @@ namespace Proyecto01.Controllers
         [HttpGet]
         public ActionResult Agregar()
         {
-            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "id_equipamiento", "nombre_equipamiento");
+            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "IdEquipamiento", "NombreEquipamiento");
             return View();
         }
         [HttpPost]
-        public ActionResult Agregar(Salas_reunion sala, int[] equipamientosIds)
+        public ActionResult Agregar(SalasReunion sala, int[] equipamientosIds)
         {
 
             if (ModelState.IsValid)
             {
-                sala.Equipamientos = context.Equipamientos.Where(e => equipamientosIds.Contains(e.id_equipamiento)).ToList();
-                context.Salas_reunion.Add(sala);
+               sala.SalasEquipamientos = (ICollection<SalasEquipamientos>)context.Equipamientos.Where(e => equipamientosIds.Contains(e.IdEquipamiento)).ToList();
+                context.salasReunions.Add(sala);
                 context.SaveChanges();
                 return RedirectToAction("GestionSalas");
 
             }
-            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "id_equipamiento", "nombre_equipamiento");
+            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "IdEquipamiento", "NombreEquipamiento");
             return View(sala);
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpGet]
         public ActionResult Editar(int? id)
         {
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
 
-            var sala = context.Salas_reunion.Include("Equipamientos").FirstOrDefault(s => s.id_sala == id);
+            var sala = context.salasReunions.Include("Equipamientos").FirstOrDefault(s => s.IdSala == id);
             if (sala == null)
                 return HttpNotFound();
 
-            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "id_equipamiento", "nombre_equipamiento");
+            ViewBag.Equipamientos = new SelectList(context.Equipamientos, "IdEquipamiento", "NombreEquipamiento");
 
 
             return View(sala);
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpPost]
-        public ActionResult Editar(Salas_reunion sala, int[] equipamientosIds)
+        public ActionResult Editar(SalasReunion sala, int[] equipamientosIds)
         {
 
 
@@ -78,15 +78,15 @@ namespace Proyecto01.Controllers
 
             {
 
-                var sala2 = context.Salas_reunion.Include("Equipamientos").FirstOrDefault(s => s.id_sala == sala.id_sala);
+                var sala2 = context.salasReunions.Include("Equipamientos").FirstOrDefault(s => s.IdSala == sala.IdSala);
                 if (sala2 == null)
                     return HttpNotFound();
 
-                sala2.nombre = sala.nombre;
-                sala2.capacidad = sala.capacidad;
-                sala2.ubicacion = sala.ubicacion;
-                sala2.hora_inicio = sala.hora_inicio;
-                sala2.hora_fin = sala.hora_fin;
+                sala2.Nombre = sala.Nombre;
+                sala2.Capacidad = sala.Capacidad;
+                sala2.Ubicacion = sala.Ubicacion;
+                sala2.HoraInicio = sala.HoraInicio;
+                sala2.HoraFin = sala.HoraFin;
                 sala2.Equipamientos.Clear();
 
                 if (equipamientosIds != null)
@@ -107,27 +107,27 @@ namespace Proyecto01.Controllers
 
             return View(sala);
         }
-        [AuthorizeAdmin]
+        //[AuthorizeAdmin]
         [HttpGet]
         public ActionResult Eliminar(int? id)
         {
 
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            var sala = context.Salas_reunion.SingleOrDefault(c => c.id_sala == id);
+            var sala = context.salasReunions.SingleOrDefault(c => c.IdSala == id);
             if (sala == null)
                 return HttpNotFound();
             return View(sala);
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpPost, ActionName("Eliminar")]
         public ActionResult EliminarConfirmacion(int? id)
         {
             ViewBag.IsLoggedIn = User.Identity.IsAuthenticated;
 
 
-            var sala = context.Salas_reunion.Find(id);
-            context.Salas_reunion.Remove(sala);
+            var sala = context.salasReunions.Find(id);
+            context.salasReunions.Remove(sala);
             context.SaveChanges();
             return RedirectToAction("GestionSalas");
         }

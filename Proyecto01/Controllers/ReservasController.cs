@@ -1,54 +1,56 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Proyecto01.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WorksSpacesG9.Attributes;
 
-namespace WorksSpacesG9.Controllers
+
+namespace Proyecto01.Controllers
 {
     public class ReservasController : Controller
     {
-        private WorkSpacesG9Entities context = new WorkSpacesG9Entities();
+        private ApplicationDbContext context = new ApplicationDbContext();
+       
+        
+        
         [HttpGet]
         public ActionResult ReservasUsuario(int idSala)
         {
-            ViewBag.UserId = (int)Session["idUsuario"];
+            string userId = User.Identity.GetUserId(); // Obtiene el ID del usuario autenticado
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
+            ViewBag.UserId = userId;
             ViewBag.SalaID = idSala;
-            return View(new Reservas { id_sala = idSala });
+            return View(new Reserva { IdSala = idSala });
         }
 
         [HttpPost]
-        public ActionResult ReservasUsuario(Reservas reservas)
+        public ActionResult ReservasUsuario(Reserva reservas)
         {
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
 
-            if (Session["idUsuario"] != null)
+            reservas.IdUsuario = userId; // Asigna el ID del usuario autenticado
+            reservas.FechaReserva = reservas.FechaReserva.Date;
+
+            bool SalaOcupada = context.Reservas.Any(r =>
+                r.IdSala == reservas.IdSala &&
+                r.FechaReserva == reservas.FechaReserva &&
+                ((reservas.HoraInicio >= r.HoraInicio && reservas.HoraInicio < r.HoraFin) ||
+                 (reservas.HoraFin > r.HoraInicio && reservas.HoraFin <= r.HoraFin)));
+
+            if (SalaOcupada)
             {
-                reservas.id_usuario = (int)Session["idUsuario"];
-
-            }
-            else
-            {
-                return RedirectToAction("Login", "Login");
-            }
-
-            reservas.fecha_reserva = reservas.fecha_reserva.Date;
-
-            var SalaOcupda = context.Reservas.Any(r =>
-            r.id_sala == reservas.id_sala &&
-            r.fecha_reserva == reservas.fecha_reserva &&
-            ((reservas.hora_inicio >= r.hora_inicio && reservas.hora_inicio < r.hora_fin) ||
-             (reservas.hora_fin > r.hora_inicio && reservas.hora_fin <= r.hora_fin)));
-
-            if (SalaOcupda)
-            {
-
-                ModelState.AddModelError("", "El horario de reserva es invalido o ya esta ocupado, elija otro horario.");
+                ModelState.AddModelError("", "El horario de reserva es inválido o ya está ocupado, elija otro horario.");
                 return View(reservas);
-
             }
+
             if (ModelState.IsValid)
             {
                 context.Reservas.Add(reservas);
@@ -56,62 +58,71 @@ namespace WorksSpacesG9.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
-
             return View(reservas);
-
         }
-
+        //hace falta tropicalizar con los usuarios indetity
         [HttpGet]
         public ActionResult ReservasPorUsuario(int id)
         {
-            var usuario = context.Usuarios.Find(id);
-            ViewBag.UsuarioNombre = usuario.nombre;
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
 
-            var reservas = context.Reservas.Where(r => r.id_usuario == id).ToList();
+            var reservas = context.Reservas
+                .Include(r => r.Sala)
+                .Where(r => r.IdUsuario == userId)
+                .ToList();
+
             return View(reservas);
-
         }
 
         [HttpGet]
         public ActionResult editarReservaUsuario(int? id)
         {
 
-            ViewBag.UserId = (int)Session["idUsuario"];
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            var reserva = context.Reservas.Find(id);
+
+            var reserva = context.Reservas.SingleOrDefault(r => r.IdReserva == id && r.IdUsuario == userId);
             if (reserva == null)
                 return HttpNotFound();
+
             return View(reserva);
 
-
         }
+        //----------------------
 
         [HttpPost]
-        public ActionResult editarReservaUsuario(Reservas reserva)
+        public ActionResult editarReservaUsuario(Reserva reserva)
         {
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
 
-            ViewBag.UserId = (int)Session["idUsuario"];
-            var SalaOcupda = context.Reservas.Any(r =>
-            r.id_sala == reserva.id_sala &&
-            r.fecha_reserva == reserva.fecha_reserva &&
-            ((reserva.hora_inicio >= r.hora_inicio && reserva.hora_inicio < r.hora_fin) ||
-            (reserva.hora_fin > r.hora_inicio && reserva.hora_fin <= r.hora_fin)));
+            bool SalaOcupada = context.Reservas.Any(r =>
+                r.IdSala == reserva.IdSala &&
+                r.FechaReserva == reserva.FechaReserva &&
+                r.IdReserva != reserva.IdReserva &&
+                ((reserva.HoraInicio >= r.HoraInicio && reserva.HoraInicio < r.HoraFin) ||
+                 (reserva.HoraFin > r.HoraInicio && reserva.HoraFin <= r.HoraFin)));
 
-            if (SalaOcupda)
+            if (SalaOcupada)
             {
-
-                ModelState.AddModelError("", "El horario de reserva es invalido o ya esta ocupado, elija otro horario.");
+                ModelState.AddModelError("", "El horario de reserva es inválido o ya está ocupado, elija otro horario.");
                 return View(reserva);
-
             }
+
             if (ModelState.IsValid)
             {
                 context.Entry(reserva).State = EntityState.Modified;
                 context.SaveChanges();
-                return RedirectToAction("ReservasPorUsuario", "Reservas", new { id = reserva.id_usuario });
+                return RedirectToAction("ReservasPorUsuario");
             }
+
             return View(reserva);
 
         }
@@ -119,39 +130,44 @@ namespace WorksSpacesG9.Controllers
         [HttpGet]
         public ActionResult Eliminar(int? id)
         {
-            ViewBag.UserId = (int)Session["idUsuario"];
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            var reserva = context.Reservas.SingleOrDefault(r => r.id_reserva == id);
+
+            var reserva = context.Reservas.SingleOrDefault(r => r.IdReserva == id && r.IdUsuario == userId);
             if (reserva == null)
                 return HttpNotFound();
+
             return View(reserva);
         }
 
         [HttpPost, ActionName("Eliminar")]
         public ActionResult EliminarConfirmacion(int? id)
         {
-            ViewBag.UserId = (int)Session["idUsuario"];
-            var reserva = context.Reservas.Find(id);
-            var idUsuario = reserva.id_usuario;
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
+            var reserva = context.Reservas.SingleOrDefault(r => r.IdReserva == id && r.IdUsuario == userId);
+            if (reserva == null)
+                return HttpNotFound();
+
             context.Reservas.Remove(reserva);
             context.SaveChanges();
-            return RedirectToAction("ReservasPorUsuario", "Reservas", new { id = idUsuario });
+            return RedirectToAction("ReservasPorUsuario");
         }
-        [AuthorizeAdmin]
+        //[AuthorizeAdmin]
         [HttpGet]
         public ActionResult listaReservas()
         {
-            ViewBag.Salas = context.Salas_reunion.ToList();
-            ViewBag.Usuarios = context.Usuarios.ToList();
-
-            var reservasFiltro = context.Reservas.Include(r => r.Salas_reunion).Include(r => r.Usuarios).ToList();
-
-            var reservas = context.Reservas.ToList();
+            var reservas = context.Reservas.Include(r => r.Sala).Include(r => r.ApplicationUser).ToList();
             return View(reservas);
         }
 
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]---------------------------------------
         [HttpGet]
         public ActionResult editarReservaAdmin(int? id)
         {
@@ -165,17 +181,17 @@ namespace WorksSpacesG9.Controllers
 
 
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpPost]
-        public ActionResult editarReservaAdmin(Reservas reserva)
+        public ActionResult editarReservaAdmin(Reserva reserva)
         {
 
             ViewBag.UserId = (int)Session["idUsuario"];
             var SalaOcupda = context.Reservas.Any(r =>
-            r.id_sala == reserva.id_sala &&
-            r.fecha_reserva == reserva.fecha_reserva &&
-            ((reserva.hora_inicio >= r.hora_inicio && reserva.hora_inicio < r.hora_fin) ||
-            (reserva.hora_fin > r.hora_inicio && reserva.hora_fin <= r.hora_fin)));
+            r.IdSala == reserva.IdSala &&
+            r.FechaReserva == reserva.FechaReserva &&
+            ((reserva.HoraInicio >= r.HoraInicio && reserva.HoraInicio < r.HoraFin) ||
+            (reserva.HoraFin > r.HoraInicio && reserva.HoraFin <= r.HoraFin)));
 
             if (SalaOcupda)
             {
@@ -193,7 +209,7 @@ namespace WorksSpacesG9.Controllers
             return View(reserva);
 
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpGet]
         public ActionResult FiltrarReservasXSala(int? salaId)
         {
@@ -203,12 +219,13 @@ namespace WorksSpacesG9.Controllers
                 return RedirectToAction("listaReservas");
             }
 
-            var reservas = context.Reservas.Where(r => r.id_sala == salaId).ToList();
+            var reservas = context.Reservas.Where(r => r.IdSala == salaId).ToList();
 
             return View("FiltrarReservasXSala", reservas);
 
         }
-        [AuthorizeAdmin]
+        //tema del usuario
+        //[AuthorizeAdmin]
         [HttpGet]
         public ActionResult FiltrarReservasXUsuario(int? usuarioId)
         {
@@ -223,7 +240,7 @@ namespace WorksSpacesG9.Controllers
             return View("FiltrarReservasXUsuario", reservas);
 
         }
-        [AuthorizeAdmin]
+        //[AuthorizeAdmin]
         [HttpGet]
         public ActionResult FiltrarReservasXFecha(DateTime? fecha)
         {
@@ -233,43 +250,45 @@ namespace WorksSpacesG9.Controllers
                 return RedirectToAction("listaReservas");
             }
 
-            var reservas = context.Reservas.Where(r => r.fecha_reserva == fecha).ToList();
+            var reservas = context.Reservas.Where(r => r.FechaReserva == fecha).ToList();
 
             return View("FiltrarReservasXFecha", reservas);
 
         }
-        [AuthorizeAdmin]
+       // [AuthorizeAdmin]
         [HttpGet]
         public ActionResult AgregarReserva()
         {
-            ViewBag.Salas = context.Salas_reunion.ToList();
+            ViewBag.Salas = context.salasReunions.ToList();
             ViewBag.Usuarios = context.Usuarios.ToList();
             return View();
         }
+
+
         [HttpPost]
-        public ActionResult AgregarReserva(Reservas reserva)
+        public ActionResult AgregarReserva(Reserva reserva)
         {
-            ViewBag.Salas = context.Salas_reunion.ToList();
+            ViewBag.Salas = context.salasReunions.ToList();
             ViewBag.Usuarios = context.Usuarios.ToList();
 
-            var sala = context.Salas_reunion.FirstOrDefault(s => s.id_sala == reserva.id_sala);
+            var sala = context.salasReunions.FirstOrDefault(s => s.IdSala == reserva.IdSala);
             if (sala == null)
             {
                 ModelState.AddModelError("", "La sala seleccionada no existe.");
                 return View(reserva);
             }
 
-            if (reserva.hora_inicio < sala.hora_inicio || reserva.hora_inicio >= sala.hora_fin)
+            if (reserva.HoraInicio < sala.HoraInicio || reserva.HoraInicio >= sala.HoraFin)
             {
                 ModelState.AddModelError("", "La hora de inicio de la reserva no está dentro del horario habilitado para esta sala.");
                 return View(reserva);
             }
 
             var existeConflicto = context.Reservas.Any(r =>
-                r.id_sala == reserva.id_sala &&
-                r.fecha_reserva == reserva.fecha_reserva &&
-                ((r.hora_inicio < reserva.hora_fin && r.hora_inicio >= reserva.hora_inicio) ||
-                 (reserva.hora_inicio < r.hora_fin && reserva.hora_inicio >= r.hora_inicio)));
+                r.IdSala == reserva.IdSala &&
+                r.FechaReserva == reserva.FechaReserva &&
+                ((r.HoraInicio < reserva.HoraFin && r.HoraInicio >= reserva.HoraInicio) ||
+                 (reserva.HoraInicio < r.HoraFin && reserva.HoraInicio >= r.HoraInicio)));
 
             if (existeConflicto)
             {
@@ -291,24 +310,35 @@ namespace WorksSpacesG9.Controllers
         [HttpGet]
         public ActionResult EliminarAdmin(int? id)
         {
-            ViewBag.UserId = (int)Session["idUsuario"];
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            var reserva = context.Reservas.SingleOrDefault(r => r.id_reserva == id);
+
+            var reserva = context.Reservas.SingleOrDefault(r => r.IdReserva == id && r.IdUsuario == userId);
             if (reserva == null)
                 return HttpNotFound();
+
             return View(reserva);
         }
 
+        //tema de usuario
         [HttpPost, ActionName("EliminarAdmin")]
         public ActionResult EliminarConfirmacionAdmin(int? id)
         {
-            ViewBag.UserId = (int)Session["idUsuario"];
-            var reserva = context.Reservas.Find(id);
-            var idUsuario = reserva.id_usuario;
+            string userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
+            var reserva = context.Reservas.SingleOrDefault(r => r.IdReserva == id && r.IdUsuario == userId);
+            if (reserva == null)
+                return HttpNotFound();
+
             context.Reservas.Remove(reserva);
             context.SaveChanges();
-            return RedirectToAction("listaReservas", "Reservas");
+            return RedirectToAction("ReservasPorUsuario");
         }
 
 

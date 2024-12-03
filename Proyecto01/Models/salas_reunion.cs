@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Proyecto01.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Web;
 
 namespace Proyecto01.Models
 {
+    //salas
     public class SalasReunion
     {
         [Key]
@@ -28,11 +30,14 @@ namespace Proyecto01.Models
         [Required]
         public TimeSpan HoraFin { get; set; }
 
+        public virtual ICollection<Equipamiento> Equipamientos { get; set; }
+
+
         // Relación con SalasEquipamientos
         public virtual ICollection<SalasEquipamientos> SalasEquipamientos { get; set; }
 
         // Relación con Reservas
-        public virtual ICollection<reservas> Reservas { get; set; }
+        public virtual ICollection<Reserva> Reservas { get; set; }
 
         // Relación con Estadisticas
         public virtual ICollection<Estadistica> Estadisticas { get; set; }

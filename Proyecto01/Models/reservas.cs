@@ -7,8 +7,7 @@ using System.Web;
 
 namespace Proyecto01.Models
 {
-    namespace Proyecto01.Models
-    {
+
         public class Reserva
         {
             [Key]
@@ -37,7 +36,7 @@ namespace Proyecto01.Models
             [ForeignKey("IdSala")]
             public virtual SalasReunion Sala { get; set; }
 
-            [ForeignKey("IdUsuario")]
-            public virtual Usuario Usuario { get; set; }
+            [ForeignKey("Id")]
+            public virtual ApplicationUser Usuario { get; set; }
         }
     }
