@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WorksSpacesG9.Reservas>
+﻿@model IEnumerable<Proyecto01.Models.Reserva>
 
 @{
     ViewBag.Title = "ReservasPorUsuario";
@@ -34,28 +34,28 @@
     {
         <tr>
             <td>
-                @String.Format("{0:dd-MM-yyyy}", item.fecha_reserva)
+                @String.Format("{0:dd-MM-yyyy}", item.FechaReserva)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.hora_inicio)
+                @Html.DisplayFor(modelItem => item.HoraInicio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.hora_fin)
+                @Html.DisplayFor(modelItem => item.HoraFin)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.aprobacion)
+                @Html.DisplayFor(modelItem => item.Aprobacion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Salas_reunion.nombre)
+                @Html.DisplayFor(modelItem => item.Sala.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuarios.nombre)
+                @Html.DisplayFor(modelItem => item.Usuario.Email)
             </td>
             <td>
-                @if (item.fecha_reserva >= DateTime.Now.Date)
+                @if (item.FechaReserva >= DateTime.Now.Date)
                 {
-                    @Html.ActionLink("Editar", "editarReservaUsuario", new { id = item.id_reserva }, new { @class = "btn btn-outline-success mx-4" })
-                    @Html.ActionLink("Eliminar", "Eliminar", new { id = item.id_reserva }, new { @class = "btn btn-outline-danger" })
+                    @Html.ActionLink("Editar", "editarReservaUsuario", new { id = item.IdReserva }, new { @class = "btn btn-outline-success mx-4" })
+                    @Html.ActionLink("Eliminar", "Eliminar", new { id = item.IdReserva }, new { @class = "btn btn-outline-danger" })
                 }
             </td>
         </tr>

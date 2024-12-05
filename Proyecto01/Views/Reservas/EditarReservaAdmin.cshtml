@@ -1,4 +1,4 @@
-﻿@model WorksSpacesG9.Reservas
+﻿@model Proyecto01.Models.Reserva
 
 @{
     ViewBag.Title = "editarReservaAdmin";
@@ -16,41 +16,40 @@
                 <h4>Reservas</h4>
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.id_reserva)
-                @Html.HiddenFor(model => model.id_usuario)
-                @Html.HiddenFor(model => model.id_sala)
+                @Html.HiddenFor(model => model.IdReserva)
+                @Html.HiddenFor(model => model.IdUsuario)
+                @Html.HiddenFor(model => model.IdSala)
 
 
 
                 <div class="form-group">
                     Fecha Reserva
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.fecha_reserva, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                        @Html.ValidationMessageFor(model => model.fecha_reserva, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.FechaReserva, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                        @Html.ValidationMessageFor(model => model.FechaReserva, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
                     Hora Inicio
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.hora_inicio, new { htmlAttributes = new { @class = "form-control", type = "time" } })
-                        @Html.ValidationMessageFor(model => model.hora_inicio, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.HoraInicio, new { htmlAttributes = new { @class = "form-control", type = "time" } })
                     </div>
                 </div>
 
                 <div class="form-group">
                     Hora Fin
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.hora_fin, new { htmlAttributes = new { @class = "form-control", type = "time" } })
-                        @Html.ValidationMessageFor(model => model.hora_fin, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.HoraFin, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.HoraFin, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
                     Estado
                     <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.aprobacion, new SelectList(new[] { "Aprobado", "Pendiente" }), "Seleccione un Estado", new { @class = "form-control", @name = "aprobacion" })
-                        @Html.ValidationMessageFor(model => model.aprobacion, "", new { @class = "text-danger" })
+                        @Html.DropDownListFor(model => model.Aprobacion, new SelectList(new[] { "Aprobado", "Pendiente" }), "Seleccione un Estado", new { @class = "form-control", @name = "aprobacion" })
+                        @Html.ValidationMessageFor(model => model.Aprobacion, "", new { @class = "text-danger" })
                     </div>
                 </div>
 

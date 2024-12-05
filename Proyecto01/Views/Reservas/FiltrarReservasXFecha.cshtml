@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WorksSpacesG9.Reservas>
+﻿/*El item no se esta trayendo los valores*/
+@model IEnumerable<Proyecto01.Models.Reserva>
 
 @{
     ViewBag.Title = "FiltrarReservasXUsuario";
@@ -49,28 +50,28 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.fecha_reserva)
+                    @Html.DisplayFor(modelItem => item.FechaReserva)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.hora_inicio)
+                    @Html.DisplayFor(modelItem => item.HoraInicio)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.hora_fin)
+                    @Html.DisplayFor(modelItem => item.HoraFin)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.aprobacion)
+                    @Html.DisplayFor(modelItem => item.Aprobacion)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Salas_reunion.nombre)
+                    @Html.DisplayFor(modelItem => item.Sala.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Usuarios.nombre)
+                    @Html.DisplayFor(modelItem => item.Usuario.UserName)
                 </td>
                 <td>
-                    @if (item.fecha_reserva >= DateTime.Now.Date)
+                    @if (item.FechaReserva >= DateTime.Now.Date)
                     {
-                        @Html.ActionLink("Editar", "EditarReservaAdmin", new { id = item.id_reserva }, new { @class = "btn btn-outline-success mx-4" })
-                        @Html.ActionLink("Eliminar", "EliminarAdmin", new { id = item.id_reserva }, new { @class = "btn btn-outline-danger" })
+                        @Html.ActionLink("Editar", "EditarReservaAdmin", new { id = item.IdReserva }, new { @class = "btn btn-outline-success mx-4" })
+                        @Html.ActionLink("Eliminar", "EliminarAdmin", new { id = item.IdReserva }, new { @class = "btn btn-outline-danger" })
                     }
                 </td>
             </tr>

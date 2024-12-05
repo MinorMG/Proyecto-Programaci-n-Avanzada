@@ -17,7 +17,7 @@ namespace Proyecto01.Models
             public int IdSala { get; set; }
 
             [Required]
-            public int IdUsuario { get; set; }
+            public string IdUsuario { get; set; }
 
             [Required]
             public DateTime FechaReserva { get; set; }

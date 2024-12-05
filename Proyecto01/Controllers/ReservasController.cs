@@ -163,7 +163,7 @@ namespace Proyecto01.Controllers
         [HttpGet]
         public ActionResult listaReservas()
         {
-            var reservas = context.Reservas.Include(r => r.Sala).Include(r => r.ApplicationUser).ToList();
+            var reservas = context.Reservas.Include(r => r.Sala).Include(r => r.Usuario).ToList();
             return View(reservas);
         }
 
@@ -227,7 +227,7 @@ namespace Proyecto01.Controllers
         //tema del usuario
         //[AuthorizeAdmin]
         [HttpGet]
-        public ActionResult FiltrarReservasXUsuario(int? usuarioId)
+        public ActionResult FiltrarReservasXUsuario(string? usuarioId)
         {
             if (usuarioId == null)
             {
@@ -235,7 +235,7 @@ namespace Proyecto01.Controllers
                 return RedirectToAction("listaReservas");
             }
 
-            var reservas = context.Reservas.Where(r => r.id_usuario == usuarioId).ToList();
+            var reservas = context.Reservas.Where(r => r.IdUsuario == usuarioId).ToList();
 
             return View("FiltrarReservasXUsuario", reservas);
 
@@ -260,7 +260,7 @@ namespace Proyecto01.Controllers
         public ActionResult AgregarReserva()
         {
             ViewBag.Salas = context.salasReunions.ToList();
-            ViewBag.Usuarios = context.Usuarios.ToList();
+            ViewBag.Usuarios = context.Users.ToList();
             return View();
         }
 
@@ -269,7 +269,7 @@ namespace Proyecto01.Controllers
         public ActionResult AgregarReserva(Reserva reserva)
         {
             ViewBag.Salas = context.salasReunions.ToList();
-            ViewBag.Usuarios = context.Usuarios.ToList();
+            ViewBag.Usuarios = context.Users.ToList();
 
             var sala = context.salasReunions.FirstOrDefault(s => s.IdSala == reserva.IdSala);
             if (sala == null)
