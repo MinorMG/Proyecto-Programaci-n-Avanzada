@@ -73,7 +73,7 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaReserva)
-            </tdf
+            </td
             <td>
                 @Html.DisplayFor(modelItem => item.HoraInicio)
             </td>
@@ -87,7 +87,7 @@
                 @Html.DisplayFor(modelItem => item.Sala.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuario.Email)
+                @Html.DisplayFor(modelItem => item.Usuario.UserName)
             </td>
             <td>
                 @if (item.FechaReserva >= DateTime.Now.Date)
