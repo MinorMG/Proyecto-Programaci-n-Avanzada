@@ -1,0 +1,62 @@
+﻿@model Proyecto01.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Registrar";
+}
+
+<main aria-labelledby="title" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background-color:lightslategray">
+                    <h3 class="mb-0">@ViewBag.Title</h3>
+                </div>
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <h5 class="text-center mb-4">Crea una nueva cuenta</h5>
+                        @Html.ValidationSummary("", new { @class = "alert alert-danger" })
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.nombre, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control", placeholder = "Ingresa tu nombre" })
+                            @Html.ValidationMessageFor(m => m.nombre, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Ingresa tu correo electrónico" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Crea una contraseña" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirma tu contraseña" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-grid">
+                            <input type="submit" value="Registrar" class="btn btn-block text-white" style="background-color:lightslategray" />
+                        </div>
+                    }
+
+                    <hr class="my-4" />
+                    <p class="text-center mb-1">
+                        ¿Ya tienes cuenta? @Html.ActionLink("Inicia sesión aquí", "Login", null, new { @class = "link-dark" })
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

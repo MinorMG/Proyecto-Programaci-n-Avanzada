@@ -1,0 +1,46 @@
+﻿@model Proyecto01.Models.SalasReunion
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<div class="container my-4 d-flex justify-content-center align-items-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-white bg-danger text-center">
+                <h3>¿Está seguro que desea eliminar esta sala?</h3>
+            </div>
+            <div class="card-body">
+                <hr />
+                <div class="text-center">
+                    <dl class="py-4">
+                        <dt>Nombre</dt>
+                        <dd>@Html.DisplayFor(model => model.Nombre)</dd>
+
+                        <dt>Capacidad</dt>
+                        <dd>@Html.DisplayFor(model => model.Capacidad)</dd>
+
+                        <dt>Ubicación</dt>
+                        <dd>@Html.DisplayFor(model => model.Ubicacion)</dd>
+
+                        <dt>Hora Apertura</dt>
+                        <dd>@Html.DisplayFor(model => model.HoraInicio)</dd>
+
+                        <dt>Hora Cierre</dt>
+                        <dd>@Html.DisplayFor(model => model.HoraFin)</dd>
+                    </dl>
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-actions my-4">
+                            <input type="submit" value="Eliminar" class="btn btn-outline-danger" /> |
+                            @Html.ActionLink("Regresar", "GestionSalas", new { }, new { @class = "btn btn-outline-warning" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

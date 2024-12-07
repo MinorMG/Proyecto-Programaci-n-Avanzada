@@ -1,0 +1,66 @@
+﻿@model Proyecto01.Models.Reserva
+
+@{
+    ViewBag.Title = "editarReservaUsuario";
+}
+
+<h2 class="text-center">Editar Reserva</h2>
+<div class="container d-flex justify-content-center">
+    <div class="justify-content-center" style="max-width: 600px;">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.IdReserva)
+
+
+                <div class="form-group">
+                    Fecha Reserva
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FechaReserva, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                        @Html.ValidationMessageFor(model => model.FechaReserva, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Hora Inicio
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.HoraInicio, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.HoraInicio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    Hora Fin
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.HoraFin, new { htmlAttributes = new { @class = "form-control", type = "time" } })
+                        @Html.ValidationMessageFor(model => model.HoraFin, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @Html.HiddenFor(model => model.IdReserva)
+                @Html.HiddenFor(model => model.IdUsuario)
+                @Html.HiddenFor(model => model.IdSala)
+                @Html.HiddenFor(model => model.Aprobacion)
+
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10 my-4">
+                        <input type="submit" value="Guardar Cambios" class="btn btn-outline-primary" />
+                    </div>
+                    <div class=" djustify-content-center my-4">
+                        @Html.ActionLink("Regresar", "ReservasPorUsuario", "Reservas", new { id = ViewBag.UserId }, new { @class = "btn btn-outline-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+

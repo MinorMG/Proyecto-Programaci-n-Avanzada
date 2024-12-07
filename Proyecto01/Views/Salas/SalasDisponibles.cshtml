@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Proyecto01.Models.SalasReunion>
+
+@{
+    ViewBag.Title = "SalasDisponibles";
+}
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-image: url('https://gesab.com/wp-content/uploads/2023/08/Meeting-room-Guide-GESAB-10.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: white;
+            color: black;
+        }
+
+        .btn-outline-success {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+            .card-body .btn {
+                margin-top: 10px;
+            }
+    </style>
+</head>
+
+<h2 class="my-4">Salas Disponibles para hoy</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <div class="card mb-3" style="background-color: rgba(255, 255, 255, 0.7); border: none;">
+                <div class="card-header text-center" style="background-color: rgba(255, 255, 255, 0.8); color: black;">
+                    <h4 class="">Salas Disponibles</h4>
+                    <h5 class="card-title" style="color: black;">@ViewBag.CantidadSalasDisponibles</h5>
+                    <i class="bi bi-door-open" style="color:black; font-size:2rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (!Model.Any())
+{
+    <div class="container col-6 mt-5 mb-5">
+        <div class="justify-content-center">
+            <h2>No hay salas disponibles para hoy</h2>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">@item.Nombre</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Capacidad:</strong> @item.Capacidad</p>
+                        <p><strong>Ubicación:</strong> @item.Ubicacion</p>
+                        <p>
+                            <strong>Equipamiento:</strong>
+                            @{
+                                var equipamientos = string.Join(", ", item.Equipamientos.Select(e => e.NombreEquipamiento));
+                            }
+                            @equipamientos
+                        </p>
+                        <p><strong>Hora de Apertura:</strong> @item.HoraInicio</p>
+                        <p><strong>Hora de Cierre:</strong> @item.HoraFin</p>
+                        @Html.ActionLink("Reservar", "ReservasUsuario", "Reservas", new { IdSala = item.IdSala }, new { @class = "btn btn-outline-success" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+<div class="my-2">
+    @Html.ActionLink("Regresar", "Index", "Home", new { }, new { @class = "btn btn-warning" })
+</div>
