@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "Graficos";
+}
+
+<h2>Graficos</h2>
+
+<div class="row" style="margin-top:20px">
+
+    <div class="col-lg-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Reporte De uso x Horas</b> </div>
+            <div class="panel-body">
+                <canvas id="GraficoUsoHoras" width="100" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="col-lg-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Reporte De uso x Dias</b> </div>
+            <div class="panel-body">
+                <canvas id="GraficoUsoDias" width="100" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="col-lg-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Ocupacion por Sala</b> </div>
+            <div class="panel-body">
+                <canvas id="GraficoPastelPorcentajeUso" width="100" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    @section scripts{
+        <script>
+
+
+        //----------------------------------------PORCENTAJE DE OCUPACION X SALA------------------------------------------------------
+
+            jQuery.ajax({
+           url: '@Url.Action("ReportePorcentajeOcupaJson", "Estadisticas")',
+           type: "GET",
+           dataType: "json",
+           contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+               console.log(data);
+
+               var arraySala = [];
+               var arrayReserva = [];
+
+               for (var i = 0; i < data.length; i++) {
+
+                   console.log(data[i].nombreSala)
+                   arraySala.push(data[i].nombreSala)
+                   arrayReserva.push(data[i].porcentajeOcup)
+               }
+
+               //--Logica Arrays
+
+                    console.log(arraySala)
+               console.log(arrayReserva)
+
+
+               //parte grafica
+               var controlPie = document.getElementById("GraficoPastelPorcentajeUso");
+                 var graficoPie = new Chart(controlPie, {
+                   type: 'pie',
+                   data: {
+                       labels: arraySala,
+                        datasets: [{
+                            data: arrayReserva ,
+                           backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+                        }],
+                   },
+               });
+
+
+           },
+
+             error: function (error) {
+                 console.log(error)
+
+
+
+             }
+           });
+
+      
+
+        //----------------------------------------------------USO POR HORAS--------------------------------------------------------------
+
+        jQuery.ajax({
+        url: '@Url.Action("ReporteHorasDemandadasJson", "Estadisticas")',
+         type: "GET",
+        dataType: "json",
+         contentType: "application/json; charset=utf-8",
+         success: function (data) {
+           //----Funciona-----los console es meramente para probar las funcionalidades en la consola
+           console.log(data);
+
+           var arrayHora = [];
+           var arrayHoraReserva = [];
+
+           for (var i = 0; i < data.length; i++) {
+
+               console.log(data[i].hora)
+               arrayHora.push(data[i].hora)
+               arrayHoraReserva.push(data[i].numReservas)
+           }
+
+           //--Logica Arrays
+
+           console.log(arrayHora)
+           console.log(arrayHoraReserva)
+
+
+           //parte grafica
+           var controlBar = document.getElementById("GraficoUsoHoras");
+
+           var graficoBar = new Chart(controlBar, {
+               type: 'bar',
+               data: {
+                   labels: arrayHora,
+                   datasets: [{
+                       label: "Total De reservas",
+                       /*backgroundColor: "#0800B1",*/
+                       backgroundColor: ["#0378d8", "#0378d8", "#0378d8", "#0378d8", "#0378d8", "#0378d8", "#0378d8"],
+                       borderColor: "#000000",
+                       borderWidth: 0,
+                       data: arrayHoraReserva,
+                   }],
+               },
+               options: {
+                   scales: {
+                       xAxes: [{
+                           gridLines: {
+                               display: true
+                           },
+                       }],
+                       yAxes: [{
+                           ticks: {
+                               min: 0,
+                           },
+                           gridLines: {
+                               display: true
+                           }
+                       }],
+                   },
+                   legend: {
+                       display: true
+                   }
+               }
+           });
+
+
+       },
+       error: function (error) {
+           console.log(error)
+       }
+            });
+
+
+
+
+
+
+        //------------------------------------------------------------------------------------------------------------------
+
+        //---------------------------------Grafico de Barras Uso_x_Dias-------LISTOO NO TOCAR----------------------------------
+         jQuery.ajax({
+                url: '@Url.Action("ReporteDiasUsoJson", "Estadisticas")',
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //----Funciona-----los console es meramente para probar las funcionalidades en la consola
+                    console.log(data);
+
+                    var arrayDia = [];
+                    var arrayReserva = [];
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        console.log(data[i].DiaSemana)
+
+                        arrayDia.push(data[i].DiaSemana)
+                        arrayReserva.push(data[i].NumeroReservas)
+                    }
+                    //--Logica Arrays
+
+                    console.log(arrayDia)
+                    console.log(arrayReserva)
+
+
+                    //pate grafica
+                    var controlBar = document.getElementById("GraficoUsoDias");
+
+                    var graficoBar = new Chart(controlBar, {
+                        type: 'bar',
+                        data: {
+                            labels: arrayDia,
+                            datasets: [{
+                                label: "Total De reservas",
+                                /*backgroundColor: "#0800B1",*/
+                                backgroundColor: ["#03B100", "#03B100", "#03B100", "#03B100", "#03B100", "#03B100", "#03B100"],
+                                borderColor: "#000000",
+                                borderWidth: 0,
+                                data: arrayReserva,
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: true
+                                    },
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        min: 0,
+                                    },
+                                    gridLines: {
+                                        display: true
+                                    }
+                                }],
+                            },
+                            legend: {
+                                display: true
+                            }
+                        }
+                    });
+
+
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+         });
+        //--------------------------------------------------------------------------
+
+
+
+
+
+
+        </script>
+
+    }

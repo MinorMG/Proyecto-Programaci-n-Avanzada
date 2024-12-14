@@ -3,32 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+//using necesarios para grafico
 using Proyecto01.DatosGraficos;
 using Proyecto01.Models;
 
 namespace Proyecto01.Controllers
 {
-    public class HomeController : Controller
+    public class EstadisticasController : Controller
     {
-        public ActionResult Index()
+        // GET: Estadisticas
+        public ActionResult Graficos()
         {
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
+        //orden porcentaje ocupacion / horas + demandadas / Reporte dias con + uso
 
-            return View();
-        }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
         //-------------------------------------------------------
         [HttpGet]
         public JsonResult ReportePorcentajeOcupaJson()
@@ -60,5 +51,8 @@ namespace Proyecto01.Controllers
             return Json(objLista, JsonRequestBehavior.AllowGet);
         }
         //-------------------------------------------------------
+
+
+
     }
 }

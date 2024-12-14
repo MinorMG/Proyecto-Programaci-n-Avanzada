@@ -13,6 +13,7 @@ namespace Proyecto01.Controllers
         
         private ApplicationDbContext context = new ApplicationDbContext();
 
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult GestionSalas()
